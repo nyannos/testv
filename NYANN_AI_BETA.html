@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NYANN A.I — BETA</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#050505;color:#fff;font-family:Arial,sans-serif;min-height:100vh}
+.app{width:min(1100px,94%);height:92vh;margin:4vh auto;background:#090909;border:1px solid #292929;border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
+header{height:70px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;border-bottom:1px solid #292929}
+.logo{font-size:18px;font-weight:800;letter-spacing:1px}.logo small{color:#777;font-size:10px}
+.status{font-size:11px;color:#aaa}.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#fff;margin-right:6px}
+.main{display:flex;flex:1;min-height:0}.side{width:210px;border-right:1px solid #292929;padding:16px;background:#080808}
+.new{width:100%;padding:12px;background:#fff;color:#000;border:0;border-radius:10px;font-weight:bold;cursor:pointer;margin-bottom:18px}
+.item{padding:11px;border-radius:9px;color:#aaa;font-size:13px;cursor:pointer}.item:hover,.active{background:#151515;color:#fff}
+.chat{flex:1;display:flex;flex-direction:column;min-width:0}
+.messages{flex:1;overflow:auto;padding:25px}.welcome{text-align:center;margin:15vh auto;max-width:600px}
+.badge{display:inline-block;border:1px solid #333;border-radius:20px;padding:6px 10px;color:#888;font-size:10px}
+.welcome h2{font-size:42px;margin:18px 0 8px}.welcome p{color:#777}
+.msg{display:flex;gap:10px;max-width:760px;margin:0 auto 18px}.msg.user{justify-content:flex-end}
+.avatar{width:34px;height:34px;flex:none;border:1px solid #333;border-radius:10px;background:#111;display:grid;place-items:center;font-size:9px;font-weight:bold}
+.bubble{max-width:75%;padding:12px 15px;border:1px solid #292929;background:#101010;border-radius:14px;white-space:pre-wrap;line-height:1.5;font-size:14px}
+.user .bubble{background:#fff;color:#000;border-color:#fff}
+.composer{border-top:1px solid #292929;padding:15px 20px 18px}
+.box{max-width:800px;margin:auto;display:flex;gap:8px;background:#111;border:1px solid #2b2b2b;border-radius:15px;padding:8px}
+textarea{flex:1;background:transparent;color:#fff;border:0;outline:0;resize:none;padding:9px;font:14px Arial;min-height:42px}
+.send{width:42px;height:42px;border:0;border-radius:10px;background:#fff;color:#000;font-weight:bold;cursor:pointer}
+.note{max-width:800px;margin:8px auto 0;color:#555;font-size:10px}
+@media(max-width:700px){.app{width:100%;height:100vh;margin:0;border-radius:0;border:0}.side{display:none}.messages{padding:15px}.bubble{max-width:85%}.welcome h2{font-size:34px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="logo">NYANN A.I <small>BETA</small></div>
+<div class="status"><span class="dot"></span>ONLINE</div>
+</header>
+<div class="main">
+<aside class="side">
+<button class="new" onclick="newChat()">＋ New chat</button>
+<div class="item active">💬 Chat</div>
+<div class="item" onclick="quick('Viết code HTML cho tôi')">⌘ Code</div>
+<div class="item" onclick="quick('Cho tôi một ý tưởng')">✦ Ideas</div>
+<div class="item" onclick="quick('Giải thích AI là gì')">◉ Explain</div>
+</aside>
+<section class="chat">
+<div class="messages" id="messages">
+<div class="welcome" id="welcome">
+<div class="badge">NYANN A.I • BETA</div>
+<h2>Xin chào 👋</h2>
+<p>Tôi là NYANN A.I. Hãy nhập câu hỏi hoặc yêu cầu của bạn.</p>
+</div>
+</div>
+<div class="composer">
+<div class="box">
+<textarea id="input" rows="1" placeholder="Nhắn gì đó cho NYANN A.I..."></textarea>
+<button class="send" onclick="send()">➤</button>
+</div>
+<div class="note">BETA • AI trả lời hiện đang ở chế độ demo.</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+const input=document.getElementById("input"),messages=document.getElementById("messages");
+function add(text,type){
+ const w=document.getElementById("welcome");if(w)w.remove();
+ const row=document.createElement("div");row.className="msg "+type;
+ const av=document.createElement("div");av.className="avatar";av.textContent=type==="user"?"YOU":"N";
+ const b=document.createElement("div");b.className="bubble";b.textContent=text;
+ if(type==="user"){row.append(b,av)}else{row.append(av,b)}
+ messages.appendChild(row);messages.scrollTop=messages.scrollHeight;
+}
+function reply(q){
+ let x=q.toLowerCase();
+ if(x.includes("xin chào")||x.includes("hello")||x==="hi")return"Xin chào 😎 Tôi là NYANN A.I BETA. Bạn cần tôi làm gì?";
+ if(x.includes("code")||x.includes("html")||x.includes("javascript"))return"Được 😎 Hãy gửi yêu cầu code cụ thể, tôi sẽ giúp bạn viết hoặc sửa code.";
+ if(x.includes("mu")||x.includes("manchester united")||x.includes("bóng đá"))return"⚽ NYANN A.I đã nhận chủ đề bóng đá. Hãy đặt câu hỏi cụ thể nhé.";
+ if(x.includes("ai là gì"))return"AI là trí tuệ nhân tạo — các hệ thống máy tính có thể xử lý thông tin và thực hiện nhiều nhiệm vụ thường cần khả năng của con người.";
+ return"Đã nhận yêu cầu: "+q+"\n\n⚠️ NYANN A.I đang ở BETA. Đây là bản demo chưa kết nối mô hình AI thật.";
+}
+function send(){
+ let q=input.value.trim();if(!q)return;
+ add(q,"user");input.value="";input.style.height="42px";
+ setTimeout(()=>add(reply(q),"ai"),400);
+}
+input.addEventListener("keydown",e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send()}});
+input.addEventListener("input",()=>{input.style.height="42px";input.style.height=Math.min(input.scrollHeight,130)+"px"});
+function quick(t){input.value=t;input.focus()}
+function newChat(){messages.innerHTML='<div class="welcome" id="welcome"><div class="badge">NYANN A.I • BETA</div><h2>Xin chào 👋</h2><p>Tôi là NYANN A.I. Hãy nhập câu hỏi hoặc yêu cầu của bạn.</p></div>';input.focus()}
+</script>
+</body>
+</html>
